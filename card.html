@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Info Card with Dynamic Nodes</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .node {
+        fill: #fff;
+        stroke: steelblue;
+      }
+
+      .link {
+        fill: none;
+        stroke: black;
+        marker-end: url(#arrow);
+      }
+
+      .node-text {
+        font-size: 14px;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-gray-200">
+    <div class="flex flex-col items-center justify-start h-screen p-8">
+      <!-- User Info Card -->
+      <div
+        class="bg-gray-600 p-6 rounded-lg shadow-lg w-full max-w-4xl flex mb-8"
+      >
+        <img
+          src="https://via.placeholder.com/150"
+          alt="User Photo"
+          class="w-32 h-32 rounded-full mr-6 self-center"
+        />
+        <div class="flex flex-col justify-center mx-8">
+          <h2 class="text-xl font-bold mb-2">Username</h2>
+          <p class="text-lg mb-1">email@example.com</p>
+          <p class="text-lg">Role</p>
+        </div>
+      </div>
+
+      <!-- Nodes Visualization Box -->
+      <div
+        class="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-4xl flex flex-col"
+        style="height: 33vh"
+      >
+        <div class="flex justify-center mb-4">
+          <input
+            type="text"
+            id="input-text"
+            placeholder="Enter node text"
+            class="bg-gray-600 text-white p-2 rounded"
+          />
+          <button
+            onclick="addNode()"
+            class="bg-blue-500 text-white p-2 rounded ml-2"
+          >
+            Add Node
+          </button>
+        </div>
+        <div
+          id="tree-container"
+          class="relative flex justify-center items-center h-full"
+        >
+          <!-- Nodes will be rendered here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <script>
+      let nodesData = [];
+      const nodeWidth = 100;
+      const nodeHeight = 50;
+      const margin = { top: 20, right: 90, bottom: 30, left: 90 };
+      const width = 960 - margin.left - margin.right;
+      const height = 100 - margin.top - margin.bottom; // Reduced height to fit within smaller space
+
+      const svg = d3
+        .select("#tree-container")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Define the arrow marker for the links
+      svg
+        .append("defs")
+        .append("marker")
+        .attr("id", "arrow")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 10)
+        .attr("refY", 0)
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 6)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M0,-5L10,0L0,5")
+        .style("fill", "black");
+
+      function update() {
+        const nodes = svg.selectAll(".node").data(nodesData, (d) => d.id);
+        const links = svg
+          .selectAll(".link")
+          .data(nodesData.slice(1), (d) => d.id);
+
+        // Add nodes
+        const nodeEnter = nodes
+          .enter()
+          .append("g")
+          .attr("class", "node")
+          .attr(
+            "transform",
+            (d, i) =>
+              `translate(${i * (nodeWidth + 50)}, ${
+                height / 2 - nodeHeight / 2
+              })`
+          )
+          .style("opacity", 0); // Start with opacity 0 for fade-in effect
+
+        nodeEnter
+          .append("rect")
+          .attr("width", nodeWidth)
+          .attr("height", nodeHeight)
+          .attr("rx", 10) // Rounded corners
+          .attr("ry", 10)
+          .attr("fill", "#fff")
+          .attr("stroke", "steelblue")
+          .attr("stroke-width", 2);
+
+        nodeEnter
+          .append("text")
+          .attr("class", "node-text")
+          .attr("x", nodeWidth / 2)
+          .attr("y", nodeHeight / 2)
+          .text((d) => d.name);
+
+        // Add links (arrows)
+        const linkEnter = links
+          .enter()
+          .append("path")
+          .attr("class", "link")
+          .attr("d", (d, i) => {
+            const startX = i * (nodeWidth + 50) + nodeWidth;
+            const endX = (i + 1) * (nodeWidth + 50);
+            const startY = height / 2;
+            return `M${startX},${startY} L${endX},${startY}`;
+          })
+          .style("opacity", 0); // Start with opacity 0 for fade-in effect
+
+        // Apply transitions
+        nodeEnter
+          .transition()
+          .duration(500)
+          .style("opacity", 1) // Fade-in effect
+          .attr(
+            "transform",
+            (d, i) =>
+              `translate(${i * (nodeWidth + 50)}, ${
+                height / 2 - nodeHeight / 2
+              })`
+          );
+
+        linkEnter.transition().duration(500).style("opacity", 1); // Fade-in effect
+
+        // Handle exit transitions
+        nodes.exit().transition().duration(500).style("opacity", 0).remove();
+
+        links.exit().transition().duration(500).style("opacity", 0).remove();
+      }
+
+      function addNode() {
+        const inputText = document.getElementById("input-text").value;
+        if (inputText) {
+          const newNode = { id: nodesData.length + 1, name: inputText };
+          nodesData.push(newNode);
+          update();
+          document.getElementById("input-text").value = "";
+        }
+      }
+    </script>
+  </body>
+</html>

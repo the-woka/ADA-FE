@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Questions</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-900 text-gray-200 flex justify-center items-center h-screen">
+    <div class="w-full max-w-2xl bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-bold mb-4">Interview Questions</h2>
+      <form id="question-form" class="space-y-4">
+        <!-- The form will be populated with questions dynamically -->
+        <button
+          type="submit"
+          class="w-full py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+        >
+          Submit Answers
+        </button>
+      </form>
+    </div>
+
+    <script>
+      const questions = [
+        { question: "What is your experience with version control systems?", type: "Developer" },
+        { question: "Describe your experience with data cleaning and preprocessing.", type: "Data Analyst" },
+        { question: "How do you ensure the security of data in transit?", type: "Security" },
+        { question: "Explain how you optimize SQL queries.", type: "Developer" },
+        { question: "What tools do you use for data visualization?", type: "Data Analyst" },
+        { question: "Describe a time you implemented a security protocol.", type: "Security" },
+        { question: "How do you handle merge conflicts in Git?", type: "Developer" },
+        { question: "What methods do you use for data validation?", type: "Data Analyst" },
+        { question: "How do you secure RESTful APIs?", type: "Security" },
+        { question: "What is your experience with containerization?", type: "Developer" }
+      ];
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function loadQuestions() {
+        const form = document.getElementById("question-form");
+        const shuffledQuestions = shuffle(questions).slice(0, 10);
+
+        shuffledQuestions.forEach((q, index) => {
+          const questionDiv = document.createElement("div");
+          questionDiv.classList.add("question");
+
+          const questionLabel = document.createElement("label");
+          questionLabel.innerText = `${index + 1}. ${q.question}`;
+          questionLabel.classList.add("block", "text-lg", "font-medium", "mb-2");
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.name = `question-${index}`;
+          input.classList.add("w-full", "py-2", "px-4", "bg-gray-700", "text-white", "rounded-lg", "shadow-md", "focus:outline-none");
+
+          questionDiv.appendChild(questionLabel);
+          questionDiv.appendChild(input);
+          form.insertBefore(questionDiv, form.querySelector("button"));
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", loadQuestions);
+    </script>
+  </body>
+</html>
