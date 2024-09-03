@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +10,9 @@
     />
   </head>
 
-  <body class="bg-gray-900 text-gray-200 flex justify-center items-center h-screen">
+  <body
+    class="bg-gray-900 text-gray-200 flex justify-center items-center h-screen"
+  >
     <div class="w-full max-w-2xl bg-gray-800 p-6 rounded-lg shadow-lg">
       <h2 class="text-2xl font-bold mb-4">Interview Questions</h2>
       <form id="question-form" class="space-y-4">
@@ -27,16 +28,44 @@
 
     <script>
       const questions = [
-        { question: "What is your experience with version control systems?", type: "Developer" },
-        { question: "Describe your experience with data cleaning and preprocessing.", type: "Data Analyst" },
-        { question: "How do you ensure the security of data in transit?", type: "Security" },
-        { question: "Explain how you optimize SQL queries.", type: "Developer" },
-        { question: "What tools do you use for data visualization?", type: "Data Analyst" },
-        { question: "Describe a time you implemented a security protocol.", type: "Security" },
-        { question: "How do you handle merge conflicts in Git?", type: "Developer" },
-        { question: "What methods do you use for data validation?", type: "Data Analyst" },
+        {
+          question: "What is your experience with version control systems?",
+          type: "Developer",
+        },
+        {
+          question:
+            "Describe your experience with data cleaning and preprocessing.",
+          type: "Data Analyst",
+        },
+        {
+          question: "How do you ensure the security of data in transit?",
+          type: "Security",
+        },
+        {
+          question: "Explain how you optimize SQL queries.",
+          type: "Developer",
+        },
+        {
+          question: "What tools do you use for data visualization?",
+          type: "Data Analyst",
+        },
+        {
+          question: "Describe a time you implemented a security protocol.",
+          type: "Security",
+        },
+        {
+          question: "How do you handle merge conflicts in Git?",
+          type: "Developer",
+        },
+        {
+          question: "What methods do you use for data validation?",
+          type: "Data Analyst",
+        },
         { question: "How do you secure RESTful APIs?", type: "Security" },
-        { question: "What is your experience with containerization?", type: "Developer" }
+        {
+          question: "What is your experience with containerization?",
+          type: "Developer",
+        },
       ];
 
       function shuffle(array) {
@@ -57,12 +86,26 @@
 
           const questionLabel = document.createElement("label");
           questionLabel.innerText = `${index + 1}. ${q.question}`;
-          questionLabel.classList.add("block", "text-lg", "font-medium", "mb-2");
+          questionLabel.classList.add(
+            "block",
+            "text-lg",
+            "font-medium",
+            "mb-2"
+          );
 
           const input = document.createElement("input");
           input.type = "text";
           input.name = `question-${index}`;
-          input.classList.add("w-full", "py-2", "px-4", "bg-gray-700", "text-white", "rounded-lg", "shadow-md", "focus:outline-none");
+          input.classList.add(
+            "w-full",
+            "py-2",
+            "px-4",
+            "bg-gray-700",
+            "text-white",
+            "rounded-lg",
+            "shadow-md",
+            "focus:outline-none"
+          );
 
           questionDiv.appendChild(questionLabel);
           questionDiv.appendChild(input);

@@ -22,31 +22,6 @@ let analyser;
 let microphone;
 let scriptProcessor;
 
-// Login/Register toggle functionality
-loginTitle.addEventListener("click", () => {
-  loginForm.classList.remove("hidden");
-  registerForm.classList.add("hidden");
-  loginTitle.classList.add("active");
-  registerTitle.classList.remove("active");
-});
-
-registerTitle.addEventListener("click", () => {
-  registerForm.classList.remove("hidden");
-  loginForm.classList.add("hidden");
-  registerTitle.classList.add("active");
-  loginTitle.classList.remove("active");
-});
-
-document.getElementById("switch-to-register").addEventListener("click", (e) => {
-  e.preventDefault();
-  registerTitle.click();
-});
-
-document.getElementById("switch-to-login").addEventListener("click", (e) => {
-  e.preventDefault();
-  loginTitle.click();
-});
-
 // Toggle dropdown visibility on profile picture click
 profilePic.addEventListener("click", (e) => {
   dropdownMenu.classList.toggle("hidden");

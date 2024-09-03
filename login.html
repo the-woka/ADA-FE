@@ -80,6 +80,41 @@
       </form>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+      // Variables for the login/register toggle
+      const loginTitle = document.getElementById("login-title");
+      const registerTitle = document.getElementById("register-title");
+      const loginForm = document.getElementById("login-form");
+      const registerForm = document.getElementById("register-form");
+      
+      // Login/Register toggle functionality
+      loginTitle.addEventListener("click", () => {
+        loginForm.classList.remove("hidden");
+        registerForm.classList.add("hidden");
+        loginTitle.classList.add("active");
+        registerTitle.classList.remove("active");
+      });
+
+      registerTitle.addEventListener("click", () => {
+        registerForm.classList.remove("hidden");
+        loginForm.classList.add("hidden");
+        registerTitle.classList.add("active");
+        loginTitle.classList.remove("active");
+      });
+
+      document
+        .getElementById("switch-to-register")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          registerTitle.click();
+        });
+
+      document
+        .getElementById("switch-to-login")
+        .addEventListener("click", (e) => {
+          e.preventDefault();
+          loginTitle.click();
+        });
+    </script>
   </body>
 </html>
