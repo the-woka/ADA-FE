@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HopeBot</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+
+    <script src="https://unpkg.com/feather-icons"></script>
+  </head>
+  <body class="bg-gray-900 text-gray-200">
+    <!-- Profile Picture and Dropdown -->
+    <div class="absolute top-4 right-4">
+      <div class="relative">
+        <img
+          id="profile-pic"
+          src="https://via.placeholder.com/40"
+          alt="Profile Picture"
+          class="w-10 h-10 rounded-full cursor-pointer mx-8"
+        />
+        <div id="dropdown-menu" class="dropdown-menu hidden mx-8">
+          <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+            >Info</a
+          >
+          <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-200"
+            >Log Out</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div
+      id="sidebar"
+      class="w-64 bg-gray-800 shadow-lg p-4 flex flex-col justify-between"
+    >
+      <div>
+        <h1 class="text-2xl font-bold text-white mb-4">HopeBot</h1>
+        <button
+          id="new-chat-btn"
+          class="w-full py-2 px-4 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600"
+        >
+          New Chat
+        </button>
+        <div id="chat-history" class="mt-4 space-y-2">
+          <!-- Chat history buttons will appear here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="center-content flex-1">
+      <div class="p-6 rounded-lg grid place-content-center">
+        <button
+          id="record-btn"
+          class="bg-green-500 text-white rounded-full shadow-md hover:bg-green-600 transition-colors duration-200 ease-in-out"
+        >
+          <div class="flex justify-center items-center">
+            <i data-feather="mic" class="mic-icon"></i>
+            <!-- Larger mic icon -->
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hover Area -->
+    <div class="hover-area" id="hover-area"></div>
+
+    <script>
+      // Variables for the microphone and dropdown functionalities
+      let isRecording = false;
+      let recorder;
+      let audioChunks = [];
+      let chatCounter = 0;
+      const recordBtn = document.getElementById("record-btn");
+      const newChatBtn = document.getElementById("new-chat-btn");
+      const chatHistory = document.getElementById("chat-history");
+      const sidebar = document.getElementById("sidebar");
+      const hoverArea = document.getElementById("hover-area");
+      const profilePic = document.getElementById("profile-pic");
+      const dropdownMenu = document.getElementById("dropdown-menu");
+
+      let audioContext;
+      let analyser;
+      let microphone;
+      let scriptProcessor;
+
+      // Toggle dropdown visibility on profile picture click
+      profilePic.addEventListener("click", (e) => {
+        dropdownMenu.classList.toggle("hidden");
+        e.stopPropagation(); // Prevent the click from propagating to the document
+      });
+
+      // Close the dropdown menu when clicking outside of it
+      document.addEventListener("click", (e) => {
+        if (
+          !dropdownMenu.classList.contains("hidden") &&
+          !dropdownMenu.contains(e.target) &&
+          e.target !== profilePic
+        ) {
+          dropdownMenu.classList.add("hidden");
+        }
+      });
+
+      // Recording functionality for the microphone
+      recordBtn.addEventListener("click", () => {
+        if (isRecording) {
+          stopRecording();
+        } else {
+          startRecording();
+        }
+      });
+
+      newChatBtn.addEventListener("click", () => {
+        chatCounter++;
+        const chatButton = document.createElement("button");
+        chatButton.className =
+          "w-full py-2 px-4 bg-gray-700 text-white rounded-lg shadow-md hover:bg-gray-600";
+        chatButton.textContent = `Chat ${chatCounter}`;
+        chatHistory.appendChild(chatButton);
+      });
+
+      hoverArea.addEventListener("mouseover", () => {
+        sidebar.classList.add("visible");
+      });
+
+      sidebar.addEventListener("mouseleave", () => {
+        sidebar.classList.remove("visible");
+      });
+
+      function startRecording() {
+        audioChunks = []; // Clear previous recordings
+        navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            microphone = audioContext.createMediaStreamSource(stream);
+            scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
+
+            analyser.smoothingTimeConstant = 0.8;
+            analyser.fftSize = 1024;
+
+            microphone.connect(analyser);
+            analyser.connect(scriptProcessor);
+            scriptProcessor.connect(audioContext.destination);
+
+            scriptProcessor.onaudioprocess = () => {
+              const array = new Uint8Array(analyser.frequencyBinCount);
+              analyser.getByteFrequencyData(array);
+              const volume = array.reduce((a, b) => a + b) / array.length;
+
+              // Calculate the new size based on volume
+              const newSize = Math.min(120, Math.max(80, volume * 1.5)); // Limit the size between 80px and 120px
+              recordBtn.style.width = `${newSize}px`;
+              recordBtn.style.height = `${newSize}px`;
+            };
+
+            recorder = new MediaRecorder(stream);
+            recorder.ondataavailable = (event) => {
+              audioChunks.push(event.data);
+            };
+            recorder.onstop = () => {
+              const blob = new Blob(audioChunks, { type: "audio/wav" });
+              autoDownloadRecording(blob);
+            };
+            recorder.start();
+            isRecording = true;
+            recordBtn.innerHTML =
+              '<div class="flex justify-center items-center"><i data-feather="stop-circle" class="mic-icon"></i></div>';
+            feather.replace();
+          })
+          .catch((error) => {
+            console.error("Error accessing microphone:", error);
+          });
+      }
+
+      function stopRecording() {
+        if (recorder) {
+          recorder.stop();
+        }
+        if (audioContext) {
+          audioContext.close();
+        }
+        isRecording = false;
+        recordBtn.innerHTML =
+          '<div class="flex justify-center items-center"><i data-feather="mic" class="mic-icon"></i></div>';
+        recordBtn.style.width = "80px"; // Reset to original size
+        recordBtn.style.height = "80px"; // Reset to original size
+        feather.replace();
+      }
+
+      function autoDownloadRecording(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "recording.wav";
+        document.body.appendChild(a);
+        a.style.display = "none";
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      feather.replace();
+    </script>
+  </body>
+</html>
