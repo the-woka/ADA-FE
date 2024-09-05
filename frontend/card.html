@@ -10,13 +10,12 @@
     />
     <style>
       .node {
-        fill: #fff;
-        stroke: steelblue;
+        stroke: #f3f4f6;
       }
 
       .link {
         fill: none;
-        stroke: black;
+        stroke: #1f2937;
         marker-end: url(#arrow);
       }
 
@@ -24,14 +23,20 @@
         font-size: 14px;
         text-anchor: middle;
         dominant-baseline: middle;
+        fill: white;
+      }
+
+      body {
+        background-color: #f3f4f6; /* Light background color */
+        color: #1f2937; /* Dark text */
       }
     </style>
   </head>
-  <body class="bg-gray-900 text-gray-200">
+  <body class="bg-gray-100 text-gray-800">
     <div class="flex flex-col items-center justify-start h-screen p-8">
       <!-- User Info Card -->
       <div
-        class="bg-gray-600 p-6 rounded-lg shadow-lg w-full max-w-4xl flex mb-8"
+        class="bg-gray-300 p-6 rounded-lg shadow-lg w-full max-w-4xl flex mb-8"
       >
         <img
           src="https://via.placeholder.com/150"
@@ -39,15 +44,16 @@
           class="w-32 h-32 rounded-full mr-6 self-center"
         />
         <div class="flex flex-col justify-center mx-8">
-          <h2 class="text-xl font-bold mb-2">Username</h2>
-          <p class="text-lg mb-1">email@example.com</p>
-          <p class="text-lg">Role</p>
+          <!-- Display user information -->
+          <h2 class="text-xl font-bold mb-2" id="user-name"></h2>
+          <p class="text-lg mb-1" id="user-email"></p>
+          <p class="text-lg">Role: User</p>
         </div>
       </div>
 
       <!-- Nodes Visualization Box -->
       <div
-        class="bg-gray-700 p-6 rounded-lg shadow-lg w-full max-w-4xl flex flex-col"
+        class="bg-gray-200 p-6 rounded-lg shadow-lg w-full max-w-4xl flex flex-col"
         style="height: 33vh"
       >
         <div class="flex justify-center mb-4">
@@ -55,7 +61,7 @@
             type="text"
             id="input-text"
             placeholder="Enter node text"
-            class="bg-gray-600 text-white p-2 rounded"
+            class="bg-gray-300 text-black p-2 rounded"
           />
           <button
             onclick="addNode()"
@@ -75,12 +81,22 @@
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
     <script>
+      // Sample user data (replace this with backend data)
+      const user = {
+        username: "john_doe",
+        email: "john.doe@example.com",
+      };
+
+      // Display user data on the page
+      document.getElementById("user-name").textContent = user.username;
+      document.getElementById("user-email").textContent = user.email;
+
       let nodesData = [];
       const nodeWidth = 100;
       const nodeHeight = 50;
       const margin = { top: 20, right: 90, bottom: 30, left: 90 };
       const width = 960 - margin.left - margin.right;
-      const height = 100 - margin.top - margin.bottom; // Reduced height to fit within smaller space
+      const height = 100 - margin.top - margin.bottom;
 
       const svg = d3
         .select("#tree-container")
@@ -103,7 +119,7 @@
         .attr("orient", "auto")
         .append("path")
         .attr("d", "M0,-5L10,0L0,5")
-        .style("fill", "black");
+        .style("fill", "#1F2937");
 
       function update() {
         const nodes = svg.selectAll(".node").data(nodesData, (d) => d.id);
@@ -131,8 +147,8 @@
           .attr("height", nodeHeight)
           .attr("rx", 10) // Rounded corners
           .attr("ry", 10)
-          .attr("fill", "#fff")
-          .attr("stroke", "steelblue")
+          .attr("fill", "#374151") // Blue node background
+          .attr("stroke", "#374151") // Dark stroke color
           .attr("stroke-width", 2);
 
         nodeEnter

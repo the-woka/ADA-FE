@@ -3,178 +3,205 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login/Register</title>
+    <title>Login & Register</title>
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/styles.css') }}"
-    />
+    <style>
+      body {
+        margin: 0;
+        background-image: url("frontend/img/bg.jpg"); /* Replace with actual image path */
+        background-size: cover;
+        background-position: center;
+      }
+
+      .input-field {
+        background-color: #f3f4f6; /* Light input field background */
+        color: #1f2937; /* Text color for input */
+      }
+
+      .form-container {
+        padding: 40px;
+      }
+    </style>
   </head>
-  <body
-    class="bg-gray-900 text-gray-200 flex items-center justify-center h-screen"
-  >
-    <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-      <div class="flex justify-center mb-6">
-        <button id="login-title" class="title-btn active">Login</button>
-        <button id="register-title" class="title-btn">Register</button>
+  <body class="h-screen">
+    <!-- Split screen layout -->
+    <div
+      class="w-1/2 background-section flex justify-center items-center"
+    ></div>
+
+    <div
+      class="w-full md:w-1/2 h-screen flex justify-center items-center bg-white"
+    >
+      <div class="form-container w-full max-w-md">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Login</h2>
+        <p class="text-gray-500 mb-4">
+          Welcome back! Please login to your account.
+        </p>
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label for="email-login" class="block text-sm text-gray-600"
+              >Email</label
+            >
+            <input
+              id="email-login"
+              name="email"
+              type="email"
+              required
+              class="input-field w-full px-3 py-2 rounded-md border-0"
+            />
+          </div>
+          <div>
+            <label for="password-login" class="block text-sm text-gray-600"
+              >Password</label
+            >
+            <input
+              id="password-login"
+              name="password"
+              type="password"
+              required
+              class="input-field w-full px-3 py-2 rounded-md border-0"
+            />
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label for="remember-me" class="ml-2 block text-sm text-gray-600">
+                Remember Me
+              </label>
+            </div>
+            <div class="text-sm">
+              <a
+                href="#"
+                class="font-medium text-indigo-600 hover:text-indigo-500"
+              >
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="w-full py-2 px-4 rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              Login
+            </button>
+          </div>
+        </form>
+
+        <p class="text-sm text-gray-600 mt-4">
+          New User?
+          <a
+            href="/register"
+            id="register-tab"
+            class="font-medium text-indigo-600 hover:text-indigo-500"
+            >Signup</a
+          >
+        </p>
       </div>
-
-      <!-- Login Form -->
-      <form id="login-form">
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1" for="login-email"
-            >Email</label
-          >
-          <input
-            type="email"
-            id="login-email"
-            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1" for="login-password"
-            >Password</label
-          >
-          <input
-            type="password"
-            id="login-password"
-            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          class="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Login
-        </button>
-      </form>
-
-      <!-- Register Form (Hidden by default) -->
-      <form id="register-form" class="hidden">
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1" for="register-username"
-            >Username</label
-          >
-          <input
-            type="text"
-            id="register-username"
-            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1" for="register-email"
-            >Email</label
-          >
-          <input
-            type="email"
-            id="register-email"
-            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-1" for="register-password"
-            >Password</label
-          >
-          <input
-            type="password"
-            id="register-password"
-            class="w-full px-4 py-2 bg-gray-700 text-white rounded-md"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          class="w-full py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-        >
-          Register
-        </button>
-      </form>
     </div>
 
+    <!-- JavaScript for form submission -->
     <script>
-      // Toggle between login and register forms
-      const loginTitle = document.getElementById("login-title");
-      const registerTitle = document.getElementById("register-title");
-      const loginForm = document.getElementById("login-form");
-      const registerForm = document.getElementById("register-form");
-
-      loginTitle.addEventListener("click", () => {
-        loginForm.classList.remove("hidden");
-        registerForm.classList.add("hidden");
-        // Add 'active' class to the login button, remove from register
-        loginTitle.classList.add("active");
-        registerTitle.classList.remove("active");
-      });
-
-      registerTitle.addEventListener("click", () => {
-        registerForm.classList.remove("hidden");
-        loginForm.classList.add("hidden");
-        registerTitle.classList.add("active");
-        loginTitle.classList.remove("active");
-      });
-
-      // Handle registration form submission
-      document
-        .getElementById("register-form")
-        .addEventListener("submit", function (event) {
-          event.preventDefault();
-
-          const username = document.getElementById("register-username").value;
-          const email = document.getElementById("register-email").value;
-          const password = document.getElementById("register-password").value;
-
-          fetch("/submit-register", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ username, email, password }),
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.message) {
-                console.log("Registration successful:", data);
-                // Automatically switch to the login form after registration
-                document.getElementById("login-title").click(); // Simulate clicking the login tab
-              }
-            })
-            .catch((error) => console.error("Error:", error));
-        });
-
-      // Handle login form submission
       document
         .getElementById("login-form")
         .addEventListener("submit", function (event) {
-          event.preventDefault();
+          event.preventDefault(); // Prevent form from submitting the default way
 
-          const email = document.getElementById("login-email").value;
-          const password = document.getElementById("login-password").value;
+          // Get the values from the input fields
+          const email = document.getElementById("email-login").value;
+          const password = document.getElementById("password-login").value;
 
-          fetch("/submit-login", {
+          // Send the data to the backend using fetch API
+          fetch("/api/v1/users/login", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
           })
             .then((response) => response.json())
             .then((data) => {
-              if (data.message) {
-                // Redirect to the index page after successful login
-                window.location.href = data.redirect;
+              if (data.error) {
+                alert("Login failed: " + data.error);
               } else {
-                console.error("Login failed:", data.error);
+                alert("Login successful!");
+                console.log("Access Token:", data.access_token);
+                console.log("Refresh Token:", data.refresh_token);
+
+                // Store tokens (for example in localStorage)
+                localStorage.setItem("access_token", data.access_token);
+                localStorage.setItem("refresh_token", data.refresh_token);
+
+                window.location.href = "/index";
               }
             })
             .catch((error) => console.error("Error:", error));
         });
+
+      // Function to log in and get the token
+      function loginAndStoreToken(email, password) {
+        fetch("http://127.0.0.1:5000/api/v1/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            password: password,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.access_token) {
+              // Store the access_token in localStorage
+              localStorage.setItem("access_token", data.access_token);
+              console.log("Login successful, token stored");
+
+              // Redirect to index page
+              window.location.href = "/index"; // Change '/index' to the correct path for your index page
+            } else {
+              // Handle login error
+              console.log("Login failed:", data.error);
+              alert("Login failed: " + data.error);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Function to access a protected route using the stored token
+      function accessProtectedRoute() {
+        // Retrieve the token from localStorage
+        const accessToken = localStorage.getItem("access_token");
+
+        if (accessToken) {
+          fetch("http://127.0.0.1:5000/api/v1/protected", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`, // Use the token
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => console.log("Protected data:", data))
+            .catch((error) => console.error("Error:", error));
+        } else {
+          console.log("No token found. Please log in first.");
+        }
+      }
+
+      // Call this function to access the protected route
+      accessProtectedRoute();
     </script>
   </body>
 </html>
