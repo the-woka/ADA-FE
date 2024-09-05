@@ -56,5 +56,7 @@ def submit_login():
     return jsonify({"error": "Invalid email or password"}), 401
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    from waitress import serve  # If using Gunicorn, it will handle this in production
+    app.run(debug=True)  # Development
+
