@@ -19,6 +19,7 @@ def login_page():
 
 # Registration route
 
+
 @app.route('/submit-register', methods=['POST'])
 def submit_register():
     data = request.get_json()
@@ -59,4 +60,3 @@ def submit_login():
 if __name__ == "__main__":
     from waitress import serve  # If using Gunicorn, it will handle this in production
     app.run(debug=True)  # Development
-
